@@ -62,10 +62,19 @@ class KakaoButton extends StatelessWidget {
 
   KakaoButton({super.key});
 
+  void _login(BuildContext context) async {
+    try {
+      await kakaoLoginService.loginWithKakaoOrThrow();
+      print("login 성공");
+    } catch (error) {
+      print("login 실패");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      onPressed: () => _login(context),
       style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.yellow100,
           shape: RoundedRectangleBorder(
