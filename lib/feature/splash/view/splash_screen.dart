@@ -1,6 +1,5 @@
 import 'package:fishingmemory/feature/home/home_screen.dart';
 import 'package:fishingmemory/feature/login/view/login_screen.dart';
-import 'package:fishingmemory/feature/onboarding/cubit/onboarding_state.dart';
 import 'package:fishingmemory/feature/onboarding/view/onboarding_screen.dart';
 import 'package:fishingmemory/feature/splash/cubit/splash_cubit.dart';
 import 'package:fishingmemory/feature/splash/cubit/splash_state.dart';
