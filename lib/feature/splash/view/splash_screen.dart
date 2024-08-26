@@ -23,26 +23,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
               if (state is SplashSuccess) {
                 if (state.splashStateType == SplashStateType.open) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-                  );
+                  _navigateToOnboarding(context);
                 } else if (state.splashStateType == SplashStateType.loggedIn) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
+                  _navigateToHome(context);
                 } else if (state.splashStateType == SplashStateType.notLoggedIn) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
+                  _navigateToLogin(context);
                 } else if (state.splashStateType == SplashStateType.skip) {
                    Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 }
               } else {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-                );
+                  _navigateToOnboarding(context);
               }
             },
           child: BlocBuilder<SplashCubit, SplashState>(builder: (context, state) {
@@ -66,6 +58,24 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         )
       ) 
+    );
+  }
+
+  void _navigateToLogin(BuildContext context) {
+     Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+
+  void _navigateToHome(BuildContext context) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+  }
+
+  void _navigateToOnboarding(BuildContext context) {
+     Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const OnboardingScreen()),
     );
   }
 }
