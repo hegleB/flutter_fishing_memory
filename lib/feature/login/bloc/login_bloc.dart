@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:fishingmemory/core/data/repository/auth/auth_repository.dart';
-import 'package:fishingmemory/feature/login/view/extends/kakao_login_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'login_event.dart';
