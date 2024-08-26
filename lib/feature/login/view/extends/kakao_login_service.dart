@@ -30,5 +30,6 @@ class KakaoLoginService {
         print('카카오계정으로 로그인 실패 $error');
       }
     }
+    return null;
   }
 }
