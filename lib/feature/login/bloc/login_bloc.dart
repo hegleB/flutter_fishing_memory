@@ -21,7 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       await authRepository.saveTokenToLocal(event.accessToken);
       await authRepository.saveEmailToLocal(event.email);
-      final user = await authRepository.createUser(event.email, event.accessToken);
+      await authRepository.createUser(event.email, event.accessToken);
       emit(const LoginSuccess());
     } catch (e) {
       if (e.toString().contains("Email already exists")) {
