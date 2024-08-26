@@ -18,11 +18,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _createUser(CreateUser event, Emitter<LoginState> emit) async {
     emit(const LoginLoading());
-    await Future.delayed(const Duration(seconds: 2));
     try {
-      
+      await authRepository.saveTokenToLocal(event.accessToken);
+      await authRepository.saveEmailToLocal(event.email);
       final user = await authRepository.createUser(event.email, event.accessToken);
-      print("user $user");
       emit(const LoginSuccess());
     } catch (e) {
       if (e.toString().contains("Email already exists")) {
