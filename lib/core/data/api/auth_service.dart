@@ -1,7 +1,5 @@
 import 'package:fishingmemory/core/data/entity/sign_up_fields_entity.dart';
-import 'package:fishingmemory/core/models/auth/sign_up_fields.dart';
 import 'package:fishingmemory/core/models/auth/sign_up_user.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
