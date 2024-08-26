@@ -4,6 +4,8 @@ import 'package:fishingmemory/core/data/repository/auth/auth_repository.dart';
 import 'package:fishingmemory/core/data/repository/onboarding/onboarding_repository.dart';
 import 'package:fishingmemory/feature/login/bloc/login_bloc.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_cubit.dart';
+import 'package:fishingmemory/feature/splash/cubit/splash_cubit.dart';
+import 'package:fishingmemory/feature/splash/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,12 +43,17 @@ class App extends StatelessWidget {
                 onboardingRepository: RepositoryProvider.of<OnboardingRepository>(context),
               ),
           ),
+          BlocProvider(
+            create: (context) => SplashCubit(
+                authRepository: RepositoryProvider.of<AuthRepository>(context),
+                onboardingRepository: RepositoryProvider.of<OnboardingRepository>(context),
+              ),
           ),
-        child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: LoginScreen(),  
+        ], child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: SplashScreen(),  
+          ),
       )
-    )
-  );
+    );
   }
 }
