@@ -1,5 +1,6 @@
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_cubit.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_state.dart';
+import 'package:fishingmemory/feature/permission/view/permission_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -39,7 +40,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: BlocConsumer<OnboardingCubit, OnboardingState>(
         listener: (context, state) {
           if (state is OnboardingCompleted) {
-            _navigateToLoginScreen(context);
+            if (state.onboardingStateType == OnboardingStateType.permission) {
+              _navigateToPermissionScreen(context);
+            } else if (state.onboardingStateType == OnboardingStateType.login) {
+               _navigateToLoginScreen(context); 
+            }
           } else if (state is OnboardingError) {
             _showErrorSnackbar(context, state.error);
           }
@@ -177,6 +182,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _navigateToLoginScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+
+  void _navigateToPermissionScreen(BuildContext context) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const PermissionScreen()),
     );
   }
 

@@ -30,5 +30,5 @@ class SplashError extends SplashState {
   List<Object> get props => [message];
 }
 
-enum SplashStateType { open, skip, notLoggedIn, loggedIn, deeplink }
+enum SplashStateType { open, skip, notLoggedIn, loggedIn, deeplink, permission }
 

@@ -1,6 +1,7 @@
 import 'package:fishingmemory/feature/home/home_screen.dart';
 import 'package:fishingmemory/feature/login/view/login_screen.dart';
 import 'package:fishingmemory/feature/onboarding/view/onboarding_screen.dart';
+import 'package:fishingmemory/feature/permission/view/permission_screen.dart';
 import 'package:fishingmemory/feature/splash/cubit/splash_cubit.dart';
 import 'package:fishingmemory/feature/splash/cubit/splash_state.dart';
 import 'package:flutter/material.dart';
@@ -24,14 +25,14 @@ class _SplashScreenState extends State<SplashScreen> {
               if (state is SplashSuccess) {
                 if (state.splashStateType == SplashStateType.open) {
                   _navigateToOnboarding(context);
+                } else if (state.splashStateType == SplashStateType.permission) {
+                  _navigateToPermission(context);
                 } else if (state.splashStateType == SplashStateType.loggedIn) {
                   _navigateToHome(context);
                 } else if (state.splashStateType == SplashStateType.notLoggedIn) {
                   _navigateToLogin(context);
                 } else if (state.splashStateType == SplashStateType.skip) {
-                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
+                  _navigateToLogin(context);
                 }
               } else {
                   _navigateToOnboarding(context);
@@ -76,6 +77,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void _navigateToOnboarding(BuildContext context) {
      Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+    );
+  }
+
+  void _navigateToPermission(BuildContext context) {
+     Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const PermissionScreen()),
     );
   }
 }

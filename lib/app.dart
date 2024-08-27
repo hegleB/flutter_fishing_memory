@@ -2,6 +2,7 @@ import 'package:fishingmemory/core/data/api/%08dio_util.dart';
 import 'package:fishingmemory/core/data/api/auth_service.dart';
 import 'package:fishingmemory/core/data/repository/auth/auth_repository.dart';
 import 'package:fishingmemory/core/data/repository/onboarding/onboarding_repository.dart';
+import 'package:fishingmemory/core/data/repository/permission/permission_repository.dart';
 import 'package:fishingmemory/feature/login/bloc/login_bloc.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_cubit.dart';
 import 'package:fishingmemory/feature/splash/cubit/splash_cubit.dart';
@@ -29,7 +30,10 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<OnboardingRepository>(
           create: (context) => OnboardingRepositoryImpl(sharedPreferences),
-          )
+        ),
+        RepositoryProvider<PermissionRepository>(
+          create: (context) => PermissionRepositoryImpl(sharedPreferences),
+        ),
       ], 
       child: MultiBlocProvider(
         providers: [
@@ -41,12 +45,14 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (context) => OnboardingCubit(
                 onboardingRepository: RepositoryProvider.of<OnboardingRepository>(context),
+                permissionRepository: RepositoryProvider.of<PermissionRepository>(context),
               ),
           ),
           BlocProvider(
             create: (context) => SplashCubit(
                 authRepository: RepositoryProvider.of<AuthRepository>(context),
                 onboardingRepository: RepositoryProvider.of<OnboardingRepository>(context),
+                permissionRepository: RepositoryProvider.of<PermissionRepository>(context),
               ),
           ),
         ], child: MaterialApp(
