@@ -1,6 +1,5 @@
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/core/widgets/default_circular_progress_indicator.dart';
-import 'package:fishingmemory/feature/home/home_screen.dart';
 import 'package:fishingmemory/feature/login/bloc/login_bloc.dart';
 import 'package:fishingmemory/feature/login/view/extends/kakao_login_service.dart';
 import 'package:fishingmemory/feature/main/main_screen.dart';

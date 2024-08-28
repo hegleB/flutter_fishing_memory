@@ -1,8 +1,4 @@
 
-import 'package:fishingmemory/core/resource/resource.dart';
-import 'package:fishingmemory/feature/history/view/history_screen.dart';
-import 'package:fishingmemory/feature/mypage/view/mypage_screen.dart';
-import 'package:fishingmemory/feature/program_information/view/program_information_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget{
