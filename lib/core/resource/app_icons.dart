@@ -5,4 +5,5 @@ abstract class AppIcons {
   static const homeIcon = "assets/icons/ic_home.png";
   static const historyIcon = "assets/icons/ic_history.png";
   static const mypageIcon = "assets/icons/ic_mypage.png";
+  static const arrowForward = "assets/icons/ic_arrow_forward.png";
 }

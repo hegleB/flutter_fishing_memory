@@ -35,4 +35,14 @@ abstract class AppStrings {
   static const home = "홈";
   static const history = "나의 기록";
   static const mypage = "마이페이지";
+
+  static const kakaoAccount = "카카오계정";
+  static const fishingSpotBookmark = "낚시터 찜";
+  static const versionInfo = "버전 정보";
+  static const termsOfService = "이용 약관";
+  static const privacyPolice = "개인정보처리방침";
+  static const logout = "로그아웃";
+  static const withdraw = "서비스 탈퇴";
+  static const opensourceLicense = "오픈소스 라이선스";
+  static const darkModeSetting = "다크모드 설정";
 }
