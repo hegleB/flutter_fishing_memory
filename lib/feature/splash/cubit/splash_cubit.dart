@@ -30,10 +30,10 @@ Future<void> setOnboardingState() async {
       emit(const SplashSuccess(SplashStateType.open));
     } else if (permissionType == null) {
       emit(const SplashSuccess(SplashStateType.permission));
-    } else if (accessToken != null) {
-      emit(const SplashSuccess(SplashStateType.loggedIn));
-    } else {
+    } else if (accessToken == null) {
       emit(const SplashSuccess(SplashStateType.notLoggedIn));
+    } else {
+      emit(const SplashSuccess(SplashStateType.loggedIn));
     }
   }
 }

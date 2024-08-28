@@ -1,5 +1,5 @@
-import 'package:fishingmemory/feature/home/home_screen.dart';
 import 'package:fishingmemory/feature/login/view/login_screen.dart';
+import 'package:fishingmemory/feature/main/main_screen.dart';
 import 'package:fishingmemory/feature/onboarding/view/onboarding_screen.dart';
 import 'package:fishingmemory/feature/permission/view/permission_screen.dart';
 import 'package:fishingmemory/feature/splash/cubit/splash_cubit.dart';
@@ -70,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateToHome(BuildContext context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => const MainScreen()),
     );
   }
 
