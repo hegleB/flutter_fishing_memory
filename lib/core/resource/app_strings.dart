@@ -31,4 +31,8 @@ abstract class AppStrings {
   static const permissionNeededMessage = "앱 설정에서 권한을 부여해주세요.";
   static const cancel = "취소";
   static const goToSettings = "설정으로 이동";
+
+  static const home = "홈";
+  static const history = "나의 기록";
+  static const mypage = "마이페이지";
 }
