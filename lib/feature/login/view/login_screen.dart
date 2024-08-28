@@ -17,11 +17,11 @@ class LoginScreen extends StatelessWidget {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) async {
         if (state is LoginLaunch) {
-          _handleLogin(context, kakaoLoginService);
+          handleLogin(context, kakaoLoginService);
         } else if (state is LoginSuccess) {
-          _navigateToHomeScreen(context);
+          navigateToHomeScreen(context);
         } else if (state is LoginError) {
-          _showErrorSnackBar(context, state.error);
+          showErrorSnackBar(context, state.error);
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -56,7 +56,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _handleLogin(BuildContext context, KakaoLoginService kakaoLoginService) async {
+  Future<void> handleLogin(BuildContext context, KakaoLoginService kakaoLoginService) async {
     try {
       OAuthToken? token = await kakaoLoginService.loginWithKakaoOrThrow();
       User user = await UserApi.instance.me();
@@ -65,20 +65,20 @@ class LoginScreen extends StatelessWidget {
       if (email != null && token != null) {
         context.read<LoginBloc>().add(CreateUser(email, token.accessToken));
       } else {
-        _showErrorSnackBar(context, 'Failed to fetch user information');
+        showErrorSnackBar(context, 'Failed to fetch user information');
       }
     } catch (e) {
-      _showErrorSnackBar(context, e.toString());
+      showErrorSnackBar(context, e.toString());
     }
   }
 
-  void _navigateToHomeScreen(BuildContext context) {
+  void navigateToHomeScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const MainScreen()),
     );
   }
 
-  void _showErrorSnackBar(BuildContext context, String message) {
+  void showErrorSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
@@ -105,14 +105,14 @@ class LoginTitle extends StatelessWidget {
 class KakaoButton extends StatelessWidget {
   const KakaoButton({super.key});
 
-  void _login(BuildContext context) {
+  void login(BuildContext context) {
     context.read<LoginBloc>().add(ClickedKakaoLogin());
   }
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => _login(context),
+      onPressed: () => login(context),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.yellow100,
         shape: RoundedRectangleBorder(

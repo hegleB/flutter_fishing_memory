@@ -15,10 +15,10 @@ class SplashCubit extends Cubit<SplashState> {
     required this.onboardingRepository,
     required this.permissionRepository,
   }) : super(SplashLoading()) {
-    _initialize();
+    initialize();
   }
 
-  void _initialize() {
+  void initialize() {
     setOnboardingState();
   }
 

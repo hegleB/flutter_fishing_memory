@@ -13,22 +13,22 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  late TabController tabController;
   final List<Widget> pages = const [
     HomeScreen(),
     HistoryScreen(),
     MyPageScreen(),
   ];
-  int _selectedIndex = 0;
+  int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
+    tabController = TabController(length: 3, vsync: this);
+    tabController.addListener(() {
+      if (tabController.indexIsChanging) {
         setState(() {
-          _selectedIndex = _tabController.index;
+          selectedIndex = tabController.index;
         });
       }
     });
@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   @override
   void dispose() {
-    _tabController.dispose();
+    tabController.dispose();
     super.dispose();
   }
   
@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       body: TabBarView(
-        controller: _tabController,
+        controller: tabController,
         physics: const NeverScrollableScrollPhysics(),
         children: const [
           HomeScreen(),
@@ -54,29 +54,29 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          _bottomNavigationItem(AppIcons.homeIcon, AppStrings.home, 0),
-          _bottomNavigationItem(AppIcons.historyIcon, AppStrings.history, 1),
-          _bottomNavigationItem(AppIcons.mypageIcon, AppStrings.mypage, 2),
+          bottomNavigationItem(AppIcons.homeIcon, AppStrings.home, 0),
+          bottomNavigationItem(AppIcons.historyIcon, AppStrings.history, 1),
+          bottomNavigationItem(AppIcons.mypageIcon, AppStrings.mypage, 2),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: selectedIndex,
         selectedItemColor: AppColors.black,
         onTap: (value) {
           setState(() {
-            _selectedIndex = value;
-            _tabController.animateTo(value);
+            selectedIndex = value;
+            tabController.animateTo(value);
           });
         },
       ),
     );
   }
   
-  BottomNavigationBarItem _bottomNavigationItem(String icon, String label, int index) {
+  BottomNavigationBarItem bottomNavigationItem(String icon, String label, int index) {
     return BottomNavigationBarItem(
       icon: Image.asset(
         icon,
         width: 24,
         height: 24,
-        color: _selectedIndex == index ? AppColors.black : AppColors.gray200,
+        color: selectedIndex == index ? AppColors.black : AppColors.gray200,
       ),
       label: label,
     );

@@ -15,8 +15,8 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
+  final PageController pageController = PageController();
+  int currentPage = 0;
 
   final List<OnboardingData> onboardingData = [
     OnboardingData(
@@ -41,48 +41,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         listener: (context, state) {
           if (state is OnboardingCompleted) {
             if (state.onboardingStateType == OnboardingStateType.permission) {
-              _navigateToPermissionScreen(context);
+              navigateToPermissionScreen(context);
             } else if (state.onboardingStateType == OnboardingStateType.login) {
-               _navigateToLoginScreen(context); 
+               navigateToLoginScreen(context); 
             }
           } else if (state is OnboardingError) {
-            _showErrorSnackbar(context, state.error);
+            showErrorSnackbar(context, state.error);
           }
         },
         builder: (context, state) {
-          return _buildOnboardingContent(context);
+          return buildOnboardingContent(context);
         },
       ),
     );
   }
 
-  Widget _buildOnboardingContent(BuildContext context) {
+  Widget buildOnboardingContent(BuildContext context) {
     return Stack(
       children: [
-        _pageView(),
-        _pageIndicators(),
-        _nextButton(context),
+        pageView(),
+        pageIndicators(),
+        nextButton(context),
       ],
     );
   }
 
-  Widget _pageView() {
+  Widget pageView() {
     return PageView.builder(
-      controller: _pageController,
+      controller: pageController,
       itemCount: onboardingData.length,
       onPageChanged: (int page) {
         setState(() {
-          _currentPage = page;
+          currentPage = page;
         });
       },
       itemBuilder: (context, pageIndex) {
         final data = onboardingData[pageIndex];
-        return _onboardingPage(data);
+        return onboardingPage(data);
       },
     );
   }
 
-  Widget _onboardingPage(OnboardingData data) {
+  Widget onboardingPage(OnboardingData data) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -116,7 +116,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _pageIndicators() {
+  Widget pageIndicators() {
     return Positioned(
       bottom: 100,
       left: 0,
@@ -126,7 +126,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: List.generate(onboardingData.length, (index) {
           return GestureDetector(
             onTap: () {
-              _pageController.animateToPage(
+              pageController.animateToPage(
                 index,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
@@ -134,10 +134,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              width: _currentPage == index ? 18.0 : 12.0,
-              height: _currentPage == index ? 18.0 : 12.0,
+              width: currentPage == index ? 18.0 : 12.0,
+              height: currentPage == index ? 18.0 : 12.0,
               decoration: BoxDecoration(
-                color: _currentPage == index ? AppColors.gray450 : AppColors.gray200,
+                color: currentPage == index ? AppColors.gray450 : AppColors.gray200,
                 shape: BoxShape.circle,
               ),
             ),
@@ -147,7 +147,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _nextButton(BuildContext context) {
+  Widget nextButton(BuildContext context) {
     return Positioned(
       bottom: 30,
       left: 20,
@@ -161,37 +161,37 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           minimumSize: const Size(double.infinity, 50),
         ),
         onPressed: () {
-          print("current: $_currentPage");
-          if (_currentPage == onboardingData.length - 1) {
+          print("current: $currentPage");
+          if (currentPage == onboardingData.length - 1) {
             context.read<OnboardingCubit>().writeFirstVisitor();
           } else {
-            _pageController.nextPage(
+            pageController.nextPage(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
             );
           }
         },
         child: Text(
-          _currentPage == onboardingData.length - 1 ? AppStrings.started : AppStrings.next,
+          currentPage == onboardingData.length - 1 ? AppStrings.started : AppStrings.next,
           style: const TextStyle(color: Colors.white),
         ),
       ),
     );
   }
 
-  void _navigateToLoginScreen(BuildContext context) {
+  void navigateToLoginScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
-  void _navigateToPermissionScreen(BuildContext context) {
+  void navigateToPermissionScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const PermissionScreen()),
     );
   }
 
-  void _showErrorSnackbar(BuildContext context, String error) {
+  void showErrorSnackbar(BuildContext context, String error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(error)),
     );
@@ -199,7 +199,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 }

@@ -24,11 +24,11 @@ class _PermissionScreenState extends State<PermissionScreen> {
           coarseStatus.isGranted && fineStatus.isGranted;
     });
     if (hasLocationPermission) {
-      _navigateToLogin();
+      navigateToLogin();
     }
   }
 
-  Future<void> _requestPermissions() async {
+  Future<void> requestPermissions(BuildContext context) async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.location,
       Permission.locationWhenInUse,
@@ -40,20 +40,20 @@ class _PermissionScreenState extends State<PermissionScreen> {
         statuses[Permission.locationWhenInUse]!.isGranted;
 
     if (hasLocationPermission) {
-      
+      context.read<PermissionCubit>().writePermission();
     } else {
-      _showPermissionSettingsDialog();
+      showPermissionSettingsDialog();
     }
   }
 
-  void _navigateToLogin() {
+  void navigateToLogin() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
-  void _showPermissionSettingsDialog() {
+  void showPermissionSettingsDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -96,7 +96,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
         body: BlocBuilder<PermissionCubit, PermissionState>(
           builder: (context, state) {
             if (state is PermissionSuccess) {
-              _navigateToLogin();
+              navigateToLogin();
             }
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,8 +136,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<PermissionCubit>().writePermission();
-                      _requestPermissions();
+                      requestPermissions(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.blue600,

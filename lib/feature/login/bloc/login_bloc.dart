@@ -11,12 +11,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
     required this.authRepository,
   }) : super(const LoginInitial()) {
-    on<CreateUser>(_createUser);
-    on<ClickedKakaoLogin>(_clickedKakaoLogin);
-    on<HandleExistingUser>(_handleExistingUser);
+    on<CreateUser>(createUser);
+    on<ClickedKakaoLogin>(clickedKakaoLogin);
+    on<HandleExistingUser>(handleExistingUser);
   }
 
-  Future<void> _createUser(CreateUser event, Emitter<LoginState> emit) async {
+  Future<void> createUser(CreateUser event, Emitter<LoginState> emit) async {
     emit(const LoginLoading());
     try {
       await authRepository.saveTokenToLocal(event.accessToken);
@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  Future<void> _clickedKakaoLogin(ClickedKakaoLogin event, Emitter<LoginState> emit) async {
+  Future<void> clickedKakaoLogin(ClickedKakaoLogin event, Emitter<LoginState> emit) async {
     emit(const LoginLoading()); 
     try {
       emit(const LoginLaunch());
@@ -39,7 +39,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  Future<void> _handleExistingUser(HandleExistingUser event, Emitter<LoginState> emit) async {
+  Future<void> handleExistingUser(HandleExistingUser event, Emitter<LoginState> emit) async {
     emit(const LoginLoading());
     try {
       emit(const LoginSuccess());
@@ -47,22 +47,4 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginError(error: e));
     }
   }
-
-  // Stream<LoginState> _mapHandleExistingUserToState(
-  //     HandleExistingUser event) async* {
-  //   yield LoginLoading();
-  //   try {
-  //     await getUserTokenUseCase(event.email).listen(
-  //       (data) async {
-  //         await authRepository.saveEmailToLocal(event.email);
-  //         await authRepository.saveTokenToLocal(event.accessToken);
-  //         yield LoginSuccess();
-  //       },
-  //     ).onError((error) async* {
-  //       yield LoginError(error.toString());
-  //     });
-  //   } catch (error) {
-  //     yield LoginError(error.toString());
-  //   }
-  // }
 }

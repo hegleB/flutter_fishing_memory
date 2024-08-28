@@ -24,18 +24,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
               if (state is SplashSuccess) {
                 if (state.splashStateType == SplashStateType.open) {
-                  _navigateToOnboarding(context);
+                  navigateToOnboarding(context);
                 } else if (state.splashStateType == SplashStateType.permission) {
-                  _navigateToPermission(context);
+                  navigateToPermission(context);
                 } else if (state.splashStateType == SplashStateType.loggedIn) {
-                  _navigateToHome(context);
+                  navigateToHome(context);
                 } else if (state.splashStateType == SplashStateType.notLoggedIn) {
-                  _navigateToLogin(context);
+                  navigateToLogin(context);
                 } else if (state.splashStateType == SplashStateType.skip) {
-                  _navigateToLogin(context);
+                  navigateToLogin(context);
                 }
               } else {
-                  _navigateToOnboarding(context);
+                  navigateToOnboarding(context);
               }
             },
           child: BlocBuilder<SplashCubit, SplashState>(builder: (context, state) {
@@ -62,25 +62,25 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void _navigateToLogin(BuildContext context) {
+  void navigateToLogin(BuildContext context) {
      Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
-  void _navigateToHome(BuildContext context) {
+  void navigateToHome(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const MainScreen()),
     );
   }
 
-  void _navigateToOnboarding(BuildContext context) {
+  void navigateToOnboarding(BuildContext context) {
      Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const OnboardingScreen()),
     );
   }
 
-  void _navigateToPermission(BuildContext context) {
+  void navigateToPermission(BuildContext context) {
      Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const PermissionScreen()),
     );
