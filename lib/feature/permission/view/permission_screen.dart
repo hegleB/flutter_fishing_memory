@@ -1,6 +1,9 @@
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/feature/login/view/login_screen.dart';
+import 'package:fishingmemory/feature/permission/cubit/permission_cubit.dart';
+import 'package:fishingmemory/feature/permission/cubit/permission_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionScreen extends StatefulWidget {
@@ -12,14 +15,6 @@ class PermissionScreen extends StatefulWidget {
 
 class _PermissionScreenState extends State<PermissionScreen> {
   bool hasLocationPermission = false;
-  
-
-  @override
-  void initState() {
-    super.initState();
-    checkPermission();
-    print("init");
-  }
 
   Future<void> checkPermission() async {
     final coarseStatus = await Permission.locationWhenInUse.status;
@@ -45,7 +40,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
         statuses[Permission.locationWhenInUse]!.isGranted;
 
     if (hasLocationPermission) {
-      _navigateToLogin();
+      
     } else {
       _showPermissionSettingsDialog();
     }
@@ -54,7 +49,7 @@ class _PermissionScreenState extends State<PermissionScreen> {
   void _navigateToLogin() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
@@ -98,58 +93,66 @@ class _PermissionScreenState extends State<PermissionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        body: BlocBuilder<PermissionCubit, PermissionState>(
+          builder: (context, state) {
+            if (state is PermissionSuccess) {
+              _navigateToLogin();
+            }
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                PermissionTitle(),
-                PermissionSettingDescription(),
-                AccessPermission(permissionType: AppStrings.requiredPermission),
-                PermissionTypeDescription(
-                  typeString: AppStrings.permissionLocation,
-                  descriptionString: AppStrings.permissionLocationDescription,
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PermissionTitle(),
+                      PermissionSettingDescription(),
+                      AccessPermission(permissionType: AppStrings.requiredPermission),
+                      PermissionTypeDescription(
+                        typeString: AppStrings.permissionLocation,
+                        descriptionString: AppStrings.permissionLocationDescription,
+                      ),
+                      AccessPermission(permissionType: AppStrings.selectedPermission),
+                      PermissionTypeDescription(
+                        typeString: AppStrings.permissionCamera,
+                        descriptionString: AppStrings.permissionCameraDescription,
+                      ),
+                      PermissionTypeDescription(
+                        typeString: AppStrings.permissionStorage,
+                        descriptionString: AppStrings.permissionStorageDescription,
+                      ),
+                      PermissionOptionalDescription(
+                        descriptionString: AppStrings.permissionOptionalDescription,
+                      ),
+                      PermissionOptionalDescription(
+                        descriptionString: AppStrings.permissionOptionalSetting,
+                      ),
+                    ],
+                  ),
                 ),
-                AccessPermission(permissionType: AppStrings.selectedPermission),
-                PermissionTypeDescription(
-                  typeString: AppStrings.permissionCamera,
-                  descriptionString: AppStrings.permissionCameraDescription,
-                ),
-                PermissionTypeDescription(
-                  typeString: AppStrings.permissionStorage,
-                  descriptionString: AppStrings.permissionStorageDescription,
-                ),
-                PermissionOptionalDescription(
-                  descriptionString: AppStrings.permissionOptionalDescription,
-                ),
-                PermissionOptionalDescription(
-                  descriptionString: AppStrings.permissionOptionalSetting,
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<PermissionCubit>().writePermission();
+                      _requestPermissions();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.blue600,
+                      minimumSize: const Size(double.infinity, 55),
+                    ),
+                    child: Text(
+                      AppStrings.confirm,
+                      style: AppStyles.displayMedium.copyWith(color: Colors.white),
+                    ),
+                  ),
                 ),
               ],
-            ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ElevatedButton(
-              onPressed: () {
-                _requestPermissions();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.blue600,
-                minimumSize: const Size(double.infinity, 55),
-              ),
-              child: Text(
-                AppStrings.confirm,
-                style: AppStyles.displayMedium.copyWith(color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
+            );
+          }
+        )
     );
   }
 }
