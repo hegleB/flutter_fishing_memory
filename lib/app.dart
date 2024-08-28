@@ -5,6 +5,7 @@ import 'package:fishingmemory/core/data/repository/onboarding/onboarding_reposit
 import 'package:fishingmemory/core/data/repository/permission/permission_repository.dart';
 import 'package:fishingmemory/feature/login/bloc/login_bloc.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_cubit.dart';
+import 'package:fishingmemory/feature/permission/cubit/permission_cubit.dart';
 import 'package:fishingmemory/feature/splash/cubit/splash_cubit.dart';
 import 'package:fishingmemory/feature/splash/view/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,11 @@ class App extends StatelessWidget {
             create: (context) => SplashCubit(
                 authRepository: RepositoryProvider.of<AuthRepository>(context),
                 onboardingRepository: RepositoryProvider.of<OnboardingRepository>(context),
+                permissionRepository: RepositoryProvider.of<PermissionRepository>(context),
+              ),
+          ),
+          BlocProvider(
+            create: (context) => PermissionCubit(
                 permissionRepository: RepositoryProvider.of<PermissionRepository>(context),
               ),
           ),
