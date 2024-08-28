@@ -3,6 +3,7 @@ import 'package:fishingmemory/core/widgets/default_circular_progress_indicator.d
 import 'package:fishingmemory/feature/home/home_screen.dart';
 import 'package:fishingmemory/feature/login/bloc/login_bloc.dart';
 import 'package:fishingmemory/feature/login/view/extends/kakao_login_service.dart';
+import 'package:fishingmemory/feature/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -73,7 +74,7 @@ class LoginScreen extends StatelessWidget {
 
   void _navigateToHomeScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => const MainScreen()),
     );
   }
 
