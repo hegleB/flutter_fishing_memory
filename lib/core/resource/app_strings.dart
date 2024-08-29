@@ -45,4 +45,7 @@ abstract class AppStrings {
   static const withdraw = "서비스 탈퇴";
   static const opensourceLicense = "오픈소스 라이선스";
   static const darkModeSetting = "다크모드 설정";
+
+  static const logoutErrorMessage = "로그아웃 실패하였습니다. 다시 시도해주세요.";
+  static const retryErrorMessagengError = "의도치 않은 문제가 발생하였습니다. 다시 시도해주세요.";
 }

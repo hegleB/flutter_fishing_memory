@@ -1,5 +1,6 @@
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/core/widgets/default_circular_progress_indicator.dart';
+import 'package:fishingmemory/core/widgets/app_snackbar.dart';
 import 'package:fishingmemory/feature/login/bloc/login_bloc.dart';
 import 'package:fishingmemory/feature/login/view/extends/kakao_login_service.dart';
 import 'package:fishingmemory/feature/main/main_screen.dart';
@@ -20,7 +21,7 @@ class LoginScreen extends StatelessWidget {
         } else if (state is LoginSuccess) {
           navigateToHomeScreen(context);
         } else if (state is LoginError) {
-          showErrorSnackBar(context, state.error);
+          AppSnackbar.show(context, AppStrings.logoutErrorMessage);
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -64,22 +65,16 @@ class LoginScreen extends StatelessWidget {
       if (email != null && token != null) {
         context.read<LoginBloc>().add(CreateUser(email, token.accessToken));
       } else {
-        showErrorSnackBar(context, 'Failed to fetch user information');
+        AppSnackbar.show(context, AppStrings.logoutErrorMessage);
       }
     } catch (e) {
-      showErrorSnackBar(context, e.toString());
+      AppSnackbar.show(context, AppStrings.logoutErrorMessage);
     }
   }
 
   void navigateToHomeScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const MainScreen()),
-    );
-  }
-
-  void showErrorSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
     );
   }
 }

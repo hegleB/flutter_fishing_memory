@@ -1,3 +1,4 @@
+import 'package:fishingmemory/core/widgets/app_snackbar.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_cubit.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_state.dart';
 import 'package:fishingmemory/feature/permission/view/permission_screen.dart';
@@ -43,10 +44,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             if (state.onboardingStateType == OnboardingStateType.permission) {
               navigateToPermissionScreen(context);
             } else if (state.onboardingStateType == OnboardingStateType.login) {
-               navigateToLoginScreen(context); 
+              navigateToLoginScreen(context); 
             }
           } else if (state is OnboardingError) {
-            showErrorSnackbar(context, state.error);
+            AppSnackbar.show(context, AppStrings.retryErrorMessagengError);
           }
         },
         builder: (context, state) {
@@ -188,12 +189,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void navigateToPermissionScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const PermissionScreen()),
-    );
-  }
-
-  void showErrorSnackbar(BuildContext context, String error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(error)),
     );
   }
 
