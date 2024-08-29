@@ -1,7 +1,13 @@
 import 'package:fishingmemory/core/resource/resource.dart';
-import 'package:fishingmemory/feature/fishingspot/view/%08fishing_spot_screen.dart';
+import 'package:fishingmemory/core/utils/AppConstants.dart';
+import 'package:fishingmemory/core/widgets/app_snackbar.dart';
+import 'package:fishingmemory/core/widgets/default_circular_progress_indicator.dart';
+import 'package:fishingmemory/feature/fishingspot/view/bookmark_screen.dart';
+import 'package:fishingmemory/feature/login/view/login_screen.dart';
 import 'package:fishingmemory/feature/mypage/cubit/mypage_cubit.dart';
 import 'package:fishingmemory/feature/mypage/cubit/mypage_state.dart';
+import 'package:fishingmemory/feature/mypage/view/dark_mode_screen.dart';
+import 'package:fishingmemory/feature/program_information/view/program_information_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -40,32 +46,44 @@ class _MyPageScreenState extends State<MyPageScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<MyPageCubit, MyPageState>(
       builder: (context, state) {
+        final myPageCubit = context.read<MyPageCubit>();
         String? email = context.read<MyPageCubit>().email;
         final groupedItems = buildGroupedItems(email);
+        if (state is MyPageError) {
+          AppSnackbar.show(context, AppStrings.logoutErrorMessage);
+        } else if (state is MyPageSuccess) {
+          myPageCubit.emit(MyPageInitial());
+          navigateToLogin();
+        } 
 
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: Column(
-              children: [
-                const SizedBox(height: 73),
-                for (int groupIndex = 0; groupIndex < groupedItems.length; groupIndex++)
-                  ...[
-                    for (var itemModel in groupedItems[groupIndex])
-                      MyPageItem(
-                        text: itemModel.text,
-                        hasIcon: itemModel.hasIcon,
-                        hasDescription: itemModel.hasDescription,
-                        description: itemModel.description ?? "",
-                        descriptionColor: itemModel.descriptionColor,
-                        onClick: itemModel.onClick,
-                      ),
-                    if (groupIndex < groupedItems.length - 1)
-                      divider(),
+        return Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 73),
+                    for (int groupIndex = 0; groupIndex < groupedItems.length; groupIndex++)
+                      ...[
+                        for (var itemModel in groupedItems[groupIndex])
+                          MyPageItem(
+                            text: itemModel.text,
+                            hasIcon: itemModel.hasIcon,
+                            hasDescription: itemModel.hasDescription,
+                            description: itemModel.description ?? "",
+                            descriptionColor: itemModel.descriptionColor,
+                            onClick: itemModel.onClick,
+                          ),
+                        if (groupIndex < groupedItems.length - 1) divider(),
+                      ],
                   ],
-              ],
+                ),
+              ),
             ),
-          ),
+            if (state is MyPageLoading)
+              const CenterCircularProgressIndicator(),
+          ],
         );
       },
     );
@@ -83,12 +101,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
         MyPageItemData(
           text: AppStrings.fishingSpotBookmark,
           hasIcon: true,
-          onClick: () {},
+          onClick: navigateToBookmark,
         ),
         MyPageItemData(
           text: AppStrings.darkModeSetting,
           hasIcon: true,
-          onClick: () {},
+          onClick: navigateToDarkMode,
         ),
       ],
       [
@@ -101,29 +119,39 @@ class _MyPageScreenState extends State<MyPageScreen> {
         MyPageItemData(
           text: AppStrings.termsOfService,
           hasIcon: true,
-          onClick: () {},
+          onClick: () {
+            navigateToProgramInfo(AppConstants.termsOfServiceUrl);
+          },
         ),
         MyPageItemData(
           text: AppStrings.privacyPolice,
           hasIcon: true,
-          onClick: () {},
+          onClick: () {
+            navigateToProgramInfo(AppConstants.policePrivacyUrl);
+          },
         ),
         MyPageItemData(
           text: AppStrings.opensourceLicense,
           hasIcon: true,
-          onClick: () {},
+          onClick: () {
+            navigateToProgramInfo(AppConstants.opensourceLicenseUrl);
+          },
         ),
       ],
       [
         MyPageItemData(
           text: AppStrings.logout,
           hasIcon: true,
-          onClick: () {},
+          onClick: () {
+            context.read<MyPageCubit>().logout();
+          },
         ),
         MyPageItemData(
           text: AppStrings.withdraw,
           hasIcon: true,
-          onClick: () {},
+          onClick: () {
+            context.read<MyPageCubit>().withdrawService();
+          },
         ),
       ],
     ];
@@ -135,6 +163,29 @@ class _MyPageScreenState extends State<MyPageScreen> {
       width: double.infinity,
       color: AppColors.grayBackground,
     );
+  }
+
+  void navigateToBookmark() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BookmarkScreen()));
+  }
+
+  void navigateToDarkMode() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DarkModeScreen()));
+  }
+
+  void navigateToProgramInfo(String webUrl) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProgramInformationScreen(webUrl: webUrl)));
+  }
+  
+  void navigateToLogin() {
+    Future.delayed(Duration.zero, () {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
 
