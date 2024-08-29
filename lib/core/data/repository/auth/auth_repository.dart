@@ -23,11 +23,13 @@ abstract class AuthRepository {
   Future<void> removeEmailToLocal();
   Future<String?> getAccessTokenFromLocal();
   Future<String?> getEmailFromLocal();
+  Future<void> removeEmailFromRemote(String email);
 }
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthService authService;
   final SharedPreferences sharedPreferences;
+  final projectId = dotenv.env['FIREBASE_DATABASE_PROJECT_ID'] ?? '';
 
 
   AuthRepositoryImpl({
@@ -37,7 +39,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<SignUpFieldsEntity> createUser(String email, String socialToken) async {
-    final projectId = dotenv.env['FIREBASE_DATABASE_PROJECT_ID'] ?? '';
     try {
       await authService.checkUserExistence(projectId, email);
       throw Exception('Email already exists');
@@ -92,6 +93,17 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<String?> getEmailFromLocal() async {
      try {
       return sharedPreferences.getString(Keys.signedUpEmail);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+  
+  @override
+  Future<void> removeEmailFromRemote(String email) async {
+    try {
+      await removeEmailToLocal();
+      await removeTokenFromLocal();
+      await authService.deleteUserEmail(projectId, email);
     } catch (e) {
       throw Exception(e.toString());
     }
