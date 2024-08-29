@@ -35,4 +35,8 @@ class MyPageCubit extends Cubit<MyPageState> {
       emit(MyPageError(error: e));
     }
   }
+
+  void reset() {
+    emit(MyPageInitial());
+  }
 }

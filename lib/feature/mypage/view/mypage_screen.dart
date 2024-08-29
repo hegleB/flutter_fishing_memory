@@ -46,13 +46,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<MyPageCubit, MyPageState>(
       builder: (context, state) {
-        final myPageCubit = context.read<MyPageCubit>();
         String? email = context.read<MyPageCubit>().email;
         final groupedItems = buildGroupedItems(email);
         if (state is MyPageError) {
           AppSnackbar.show(context, AppStrings.logoutErrorMessage);
         } else if (state is MyPageSuccess) {
-          myPageCubit.emit(MyPageInitial());
+          context.read<MyPageCubit>().reset();
           navigateToLogin();
         } 
 
