@@ -64,8 +64,6 @@ class LoginScreen extends StatelessWidget {
 
       if (email != null && token != null) {
         context.read<LoginBloc>().add(CreateUser(email, token.accessToken));
-      } else {
-        AppSnackbar.show(context, AppStrings.logoutErrorMessage);
       }
     } catch (e) {
       AppSnackbar.show(context, AppStrings.logoutErrorMessage);
