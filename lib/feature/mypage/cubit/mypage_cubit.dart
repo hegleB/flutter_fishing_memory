@@ -14,4 +14,25 @@ class MyPageCubit extends Cubit<MyPageState> {
   Future<void> fetchEmail() async {
     email = await authRepository.getEmailFromLocal() ?? "";
   }
+
+  Future<void> logout() async {
+    emit(MyPageLoading());
+    try {
+      await authRepository.removeEmailToLocal();
+      await authRepository.removeTokenFromLocal();
+      emit(MyPageSuccess());
+    } catch (e) {
+      emit(MyPageError(error: e));
+    }
+  }
+
+  Future<void> withdrawService() async {
+    emit(MyPageLoading());
+    try {
+      await authRepository.removeEmailFromRemote(email);
+      emit(MyPageSuccess());
+    } catch (e) {
+      emit(MyPageError(error: e));
+    }
+  }
 }
