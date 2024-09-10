@@ -48,4 +48,21 @@ abstract class AppStrings {
 
   static const logoutErrorMessage = "로그아웃 실패하였습니다. 다시 시도해주세요.";
   static const retryErrorMessagengError = "의도치 않은 문제가 발생하였습니다. 다시 시도해주세요.";
+
+  static const title = "제목";
+  static const image = "사진";
+  static const freshWater = "민물";
+  static const seaWater = "바닷물";
+  static const sizeInCm = "CM";
+  static const location = "위치";
+  static const date = "날짜";
+  static const fishType = "어종";
+  static const content = "내용";
+  static const save = "저장";
+  static const edit = "수정";
+  static const inputTitle = "제목을 입력해주세요";
+  static const inputCotent = "내용을 입력해주세요";
+  static const inputFishType = "어종을 입력해주세요";
+
+  static const selection = "선택";
 }
