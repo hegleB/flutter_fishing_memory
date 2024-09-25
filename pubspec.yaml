@@ -40,7 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_naver_map: ^1.2.3+1
   fl_chart: ^0.68.0
-  google_mlkit_object_detection: ^0.13.0
+  # google_mlkit_object_detection: ^0.13.0
   kakao_flutter_sdk: ^1.9.5
   dio: ^5.6.0
   retrofit: ^4.2.0
@@ -59,6 +59,11 @@ dependencies:
   permission_handler: ^11.3.1
   package_info_plus: ^8.0.2
   webview_flutter: ^4.9.0
+  calendar_date_picker2: ^1.1.6
+  intl: any
+  flutter_localizations:
+    sdk: flutter
+  geolocator: ^13.0.1
   
 dev_dependencies:
   flutter_test:
