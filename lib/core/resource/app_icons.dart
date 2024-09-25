@@ -9,4 +9,5 @@ abstract class AppIcons {
   static const marker = "assets/icons/ic_marker.png";
   static const date = "assets/icons/ic_date.png";
   static const image = "assets/icons/ic_image.png";
+  static const mapMarker = "assets/icons/ic_map_fill_marker.png";
 }
