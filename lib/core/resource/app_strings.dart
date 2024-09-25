@@ -14,15 +14,18 @@ abstract class AppStrings {
 
   static const permissionTitle = "접근 권한 설정 안내";
   static const dot = "·  ";
-  static const permissionDescription = "Fishing Memory 서비스를 제공하는 데 필요한 권한입니다.\n앱을 사용하기 위해서는 다음과 같은 권한 설정이 필요합니다.";
+  static const permissionDescription =
+      "Fishing Memory 서비스를 제공하는 데 필요한 권한입니다.\n앱을 사용하기 위해서는 다음과 같은 권한 설정이 필요합니다.";
   static const permissionLocation = "·  위치";
   static const permissionLocationDescription = "현재 위치의 날씨 정보를 가져올 때";
   static const permissionCamera = "·  카메라";
   static const permissionCameraDescription = "물고기 사진을 찍을 때";
   static const permissionStorage = "·  저장공간";
   static const permissionStorageDescription = "물고기 사진을 저장 할 때";
-  static const permissionOptionalDescription = "앱을 편리하게 사용하고 싶다면 선택적인 접근 권한을 허용하세요. 필수 접근 권한만 허용해도 기본 서비스를 이용할 수 있습니다.";
-  static const permissionOptionalSetting = "접근 권한은 휴대폰의 [설정] -> [애플리케이션] -> [FishingMemory] -> [권한]에서 바꿀 수 있습니다.";
+  static const permissionOptionalDescription =
+      "앱을 편리하게 사용하고 싶다면 선택적인 접근 권한을 허용하세요. 필수 접근 권한만 허용해도 기본 서비스를 이용할 수 있습니다.";
+  static const permissionOptionalSetting =
+      "접근 권한은 휴대폰의 [설정] -> [애플리케이션] -> [FishingMemory] -> [권한]에서 바꿀 수 있습니다.";
   static const confirm = "확인";
   static const requiredPermission = "필수 접근 권한";
   static const selectedPermission = "선택 접근 권한";
@@ -65,4 +68,14 @@ abstract class AppStrings {
   static const inputFishType = "어종을 입력해주세요";
 
   static const selection = "선택";
+
+  static const selectionDo = "시/도/별을 \n선택해주세요";
+  static const doName = "시/도/별";
+  static const selectionCity = "시/군/구를 \n선택해주세요";
+  static const cityName = "시/군/구";
+  static const selectionMap = "지도에서 \n위치를 \n선택해주세요";
+  static const map = "지도";
+  static const setting = "설정";
+  static const previous = "이전";
+  static const currentLocation = "현재 나의 위치";
 }
