@@ -221,7 +221,7 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
         Position position = await Geolocator.getCurrentPosition();
         context
             .read<LocationSettingBloc>()
-            .add(SetCurrentLocation(state.lat, state.lng));
+            .add(SetCurrentLocation(position.longitude, position.latitude));
         context
             .read<LocationSettingBloc>()
             .add(SetDoIndex(Regions.values.length - 1));
