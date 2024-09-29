@@ -8,11 +8,13 @@ class DioUtil {
 
   late Dio _firebaseDio;
   late Dio _mapDio;
+  late Dio _storageDio;
 
   DioUtil._internal() {
     try {
       _firebaseDio = _createFirebaseDio();
       _mapDio = _createMapDio();
+      _storageDio = _createStorageDio();
     } catch (e) {
       print('Dio 초기화 오류: $e');
     }
@@ -20,6 +22,7 @@ class DioUtil {
 
   Dio get firebaseDio => _firebaseDio;
   Dio get mapDio => _mapDio;
+  Dio get storageDio => _storageDio;
 
   Dio _createFirebaseDio() {
     final baseUrl = dotenv.env['FIREBASE_DATABASE_URL'];
@@ -64,6 +67,29 @@ class DioUtil {
           "X-NCP-APIGW-API-KEY-ID": dotenv.env['NAVER_MAP_API_CLIENT_ID'],
           "X-NCP-APIGW-API-KEY": dotenv.env['NAVER_MAP_API_CLIENT_SECRET'],
         },
+      ),
+    );
+
+    dio.interceptors.add(LogInterceptor(
+      request: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+    ));
+
+    return dio;
+  }
+
+  Dio _createStorageDio() {
+    final baseUrl = dotenv.env['FIREBASE_STORAGE_URL'];
+    if (baseUrl == null || baseUrl.isEmpty) {
+      throw Exception('Storage base URL is not set in environment variables.');
+    }
+
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(milliseconds: 5000),
       ),
     );
 
