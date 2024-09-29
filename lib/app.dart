@@ -47,12 +47,6 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => PermissionCubit(
-                permissionRepository:
-                    RepositoryProvider.of<PermissionRepository>(context),
-              ),
-            ),
-            BlocProvider(
               create: (context) => MyPageCubit(
                 authRepository: RepositoryProvider.of<AuthRepository>(context),
               ),

@@ -1,3 +1,4 @@
+import 'package:fishingmemory/core/data/repository/permission/permission_repository.dart';
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/feature/login/view/login_screen.dart';
 import 'package:fishingmemory/feature/permission/cubit/permission_cubit.dart';
@@ -91,69 +92,79 @@ class _PermissionScreenState extends State<PermissionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<PermissionCubit, PermissionState>(
-          listener: (context, state) {
-        if (state is PermissionSuccess) {
-          navigateToLogin();
-        }
-      }, child: BlocBuilder<PermissionCubit, PermissionState>(
-              builder: (context, state) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PermissionTitle(),
-                  PermissionSettingDescription(),
-                  AccessPermission(
-                      permissionType: AppStrings.requiredPermission),
-                  PermissionTypeDescription(
-                    typeString: AppStrings.permissionLocation,
-                    descriptionString: AppStrings.permissionLocationDescription,
-                  ),
-                  AccessPermission(
-                      permissionType: AppStrings.selectedPermission),
-                  PermissionTypeDescription(
-                    typeString: AppStrings.permissionCamera,
-                    descriptionString: AppStrings.permissionCameraDescription,
-                  ),
-                  PermissionTypeDescription(
-                    typeString: AppStrings.permissionStorage,
-                    descriptionString: AppStrings.permissionStorageDescription,
-                  ),
-                  PermissionOptionalDescription(
-                    descriptionString: AppStrings.permissionOptionalDescription,
-                  ),
-                  PermissionOptionalDescription(
-                    descriptionString: AppStrings.permissionOptionalSetting,
-                  ),
-                ],
-              ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  requestPermissions(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.blue600,
-                  minimumSize: const Size(double.infinity, 55),
-                ),
-                child: Text(
-                  AppStrings.confirm,
-                  style: AppStyles.displayMedium.copyWith(color: Colors.white),
+    return BlocProvider(
+      create: (context) => PermissionCubit(
+        permissionRepository:
+            RepositoryProvider.of<PermissionRepository>(context),
+      ),
+      child: Scaffold(
+        body: BlocListener<PermissionCubit, PermissionState>(
+            listener: (context, state) {
+          if (state is PermissionSuccess) {
+            navigateToLogin();
+          }
+        }, child: BlocBuilder<PermissionCubit, PermissionState>(
+                builder: (context, state) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PermissionTitle(),
+                    PermissionSettingDescription(),
+                    AccessPermission(
+                        permissionType: AppStrings.requiredPermission),
+                    PermissionTypeDescription(
+                      typeString: AppStrings.permissionLocation,
+                      descriptionString:
+                          AppStrings.permissionLocationDescription,
+                    ),
+                    AccessPermission(
+                        permissionType: AppStrings.selectedPermission),
+                    PermissionTypeDescription(
+                      typeString: AppStrings.permissionCamera,
+                      descriptionString: AppStrings.permissionCameraDescription,
+                    ),
+                    PermissionTypeDescription(
+                      typeString: AppStrings.permissionStorage,
+                      descriptionString:
+                          AppStrings.permissionStorageDescription,
+                    ),
+                    PermissionOptionalDescription(
+                      descriptionString:
+                          AppStrings.permissionOptionalDescription,
+                    ),
+                    PermissionOptionalDescription(
+                      descriptionString: AppStrings.permissionOptionalSetting,
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
-        );
-      })),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    requestPermissions(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blue600,
+                    minimumSize: const Size(double.infinity, 55),
+                  ),
+                  child: Text(
+                    AppStrings.confirm,
+                    style:
+                        AppStyles.displayMedium.copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          );
+        })),
+      ),
     );
   }
 }
