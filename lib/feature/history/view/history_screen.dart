@@ -1,4 +1,4 @@
-
+import 'package:fishingmemory/feature/create/view/memo_create_screen.dart';
 import 'package:flutter/material.dart';
 
 class HistoryScreen extends StatelessWidget {
@@ -6,10 +6,16 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text("나의 기록")
-      )
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const MemoCreateScreen()));
+          },
+          child: const Text("메모 생성"),
+        ),
+      ),
     );
   }
 }
