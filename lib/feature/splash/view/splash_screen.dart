@@ -1,3 +1,6 @@
+import 'package:fishingmemory/core/data/repository/auth/auth_repository.dart';
+import 'package:fishingmemory/core/data/repository/onboarding/onboarding_repository.dart';
+import 'package:fishingmemory/core/data/repository/permission/permission_repository.dart';
 import 'package:fishingmemory/feature/login/view/login_screen.dart';
 import 'package:fishingmemory/feature/main/main_screen.dart';
 import 'package:fishingmemory/feature/onboarding/view/onboarding_screen.dart';
@@ -16,31 +19,39 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: BlocListener<SplashCubit, SplashState>(
-            listener: (context, state) async {
-              await Future.delayed(const Duration(seconds: 4));
+    return BlocProvider(
+      create: (context) => SplashCubit(
+        authRepository: RepositoryProvider.of<AuthRepository>(context),
+        onboardingRepository:
+            RepositoryProvider.of<OnboardingRepository>(context),
+        permissionRepository:
+            RepositoryProvider.of<PermissionRepository>(context),
+      ),
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: BlocListener<SplashCubit, SplashState>(listener:
+              (context, state) async {
+            await Future.delayed(const Duration(seconds: 4));
 
-              if (state is SplashSuccess) {
-                if (state.splashStateType == SplashStateType.open) {
-                  navigateToOnboarding(context);
-                } else if (state.splashStateType == SplashStateType.permission) {
-                  navigateToPermission(context);
-                } else if (state.splashStateType == SplashStateType.loggedIn) {
-                  navigateToHome(context);
-                } else if (state.splashStateType == SplashStateType.notLoggedIn) {
-                  navigateToLogin(context);
-                } else if (state.splashStateType == SplashStateType.skip) {
-                  navigateToLogin(context);
-                }
-              } else {
-                  navigateToOnboarding(context);
+            if (state is SplashSuccess) {
+              if (state.splashStateType == SplashStateType.open) {
+                navigateToOnboarding(context);
+              } else if (state.splashStateType == SplashStateType.permission) {
+                navigateToPermission(context);
+              } else if (state.splashStateType == SplashStateType.loggedIn) {
+                navigateToHome(context);
+              } else if (state.splashStateType == SplashStateType.notLoggedIn) {
+                navigateToLogin(context);
+              } else if (state.splashStateType == SplashStateType.skip) {
+                navigateToLogin(context);
               }
-            },
-          child: BlocBuilder<SplashCubit, SplashState>(builder: (context, state) {
+            } else {
+              navigateToOnboarding(context);
+            }
+          }, child:
+              BlocBuilder<SplashCubit, SplashState>(builder: (context, state) {
             return Center(
-                child: FutureBuilder(
+              child: FutureBuilder(
                 future: Future.delayed(Duration.zero),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -54,16 +65,14 @@ class _SplashScreenState extends State<SplashScreen> {
                     return const CircularProgressIndicator();
                   }
                 },
-          ),
-              );
-          }
-        )
-      ) 
+              ),
+            );
+          }))),
     );
   }
 
   void navigateToLogin(BuildContext context) {
-     Navigator.of(context).pushReplacement(
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
@@ -75,13 +84,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateToOnboarding(BuildContext context) {
-     Navigator.of(context).pushReplacement(
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const OnboardingScreen()),
     );
   }
 
   void navigateToPermission(BuildContext context) {
-     Navigator.of(context).pushReplacement(
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const PermissionScreen()),
     );
   }
