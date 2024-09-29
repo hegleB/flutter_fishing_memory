@@ -1,10 +1,18 @@
-import 'package:fishingmemory/core/data/api/%08dio_util.dart';
+import 'package:fishingmemory/core/data/api/dio_util.dart';
 import 'package:fishingmemory/core/data/api/auth_service.dart';
 import 'package:fishingmemory/core/data/api/map_service.dart';
+import 'package:fishingmemory/core/data/api/memo_service.dart';
+import 'package:fishingmemory/core/data/api/storage_service.dart';
 import 'package:fishingmemory/core/data/repository/auth/auth_repository.dart';
 import 'package:fishingmemory/core/data/repository/map/map_repository.dart';
+import 'package:fishingmemory/core/data/repository/memo/memo_repository.dart';
 import 'package:fishingmemory/core/data/repository/onboarding/onboarding_repository.dart';
 import 'package:fishingmemory/core/data/repository/permission/permission_repository.dart';
+import 'package:fishingmemory/feature/create/bloc/memo_create_bloc.dart';
+import 'package:fishingmemory/feature/create/bloc/memo_create_event.dart';
+import 'package:fishingmemory/feature/create/bloc/memo_create_state.dart';
+import 'package:fishingmemory/feature/create/view/memo_create_screen.dart';
+import 'package:fishingmemory/feature/gallery/bloc/gallery_bloc.dart';
 import 'package:fishingmemory/feature/location/bloc/location_setting_bloc.dart';
 import 'package:fishingmemory/feature/login/bloc/login_bloc.dart';
 import 'package:fishingmemory/feature/mypage/cubit/mypage_cubit.dart';
@@ -43,21 +51,15 @@ class App extends StatelessWidget {
             create: (context) =>
                 MapRepositoryImpl(mapService: MapService(dio.mapDio)),
           ),
+          RepositoryProvider<MemoRepository>(
+            create: (context) => MemoRepositoryImpl(
+              memoService: MemoService(dio.firebaseDio),
+              storageService: StorageService(dio.storageDio),
+            ),
+          ),
         ],
         child: MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => MyPageCubit(
-                authRepository: RepositoryProvider.of<AuthRepository>(context),
-              ),
-            ),
-            BlocProvider(
-              lazy: false,
-              create: (context) => LocationSettingBloc(
-                mapRepository: RepositoryProvider.of<MapRepository>(context),
-              ),
-            ),
-          ],
+          providers: const [],
           child: MaterialApp(
               debugShowCheckedModeBanner: false,
               home: SplashScreen(),

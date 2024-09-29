@@ -44,27 +44,32 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MyPageCubit, MyPageState>(
-      builder: (context, state) {
-        String? email = context.read<MyPageCubit>().email;
-        final groupedItems = buildGroupedItems(email);
-        if (state is MyPageError) {
-          AppSnackbar.show(context, AppStrings.logoutErrorMessage);
-        } else if (state is MyPageSuccess) {
-          context.read<MyPageCubit>().reset();
-          navigateToLogin();
-        } 
+    return BlocProvider(
+      create: (context) => MyPageCubit(
+        authRepository: RepositoryProvider.of<AuthRepository>(context),
+      ),
+      child: BlocBuilder<MyPageCubit, MyPageState>(
+        builder: (context, state) {
+          String? email = context.read<MyPageCubit>().email;
+          final groupedItems = buildGroupedItems(email);
+          if (state is MyPageError) {
+            AppSnackbar.show(context, AppStrings.logoutErrorMessage);
+          } else if (state is MyPageSuccess) {
+            context.read<MyPageCubit>().reset();
+            navigateToLogin();
+          }
 
-        return Stack(
-          children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 73),
-                    for (int groupIndex = 0; groupIndex < groupedItems.length; groupIndex++)
-                      ...[
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 73),
+                      for (int groupIndex = 0;
+                          groupIndex < groupedItems.length;
+                          groupIndex++) ...[
                         for (var itemModel in groupedItems[groupIndex])
                           MyPageItem(
                             text: itemModel.text,
@@ -76,15 +81,16 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           ),
                         if (groupIndex < groupedItems.length - 1) divider(),
                       ],
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (state is MyPageLoading)
-              const CenterCircularProgressIndicator(),
-          ],
-        );
-      },
+              if (state is MyPageLoading)
+                const CenterCircularProgressIndicator(),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -165,20 +171,24 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 
   void navigateToBookmark() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BookmarkScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const BookmarkScreen()));
   }
 
   void navigateToDarkMode() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DarkModeScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const DarkModeScreen()));
   }
 
   void navigateToProgramInfo(String webUrl) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProgramInformationScreen(webUrl: webUrl)));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ProgramInformationScreen(webUrl: webUrl)));
   }
-  
+
   void navigateToLogin() {
     Future.delayed(Duration.zero, () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
     });
   }
 

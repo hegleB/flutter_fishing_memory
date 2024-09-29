@@ -104,57 +104,61 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<GalleryBloc, GalleryState>(
-      listener: (context, state) {
-        if (state is GalleryError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('이미지를 로드하는 중 오류가 발생했습니다: ${state.error}')),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            ValueListenableBuilder<AssetEntity?>(
-              valueListenable: selectedGalleryImage,
-              builder: (context, selectedImage, child) {
-                return TextButton(
-                  onPressed: selectedImage != null
-                      ? () => Navigator.of(context).pop({
-                            'selectedImage': selectedImage,
-                          })
-                      : null,
-                  child: Text(
-                    AppStrings.selection,
-                    style: TextStyle(
-                      color: selectedImage != null ? Colors.blue : Colors.grey,
+    return BlocProvider(
+      create: (context) => GalleryBloc(),
+      child: BlocListener<GalleryBloc, GalleryState>(
+        listener: (context, state) {
+          if (state is GalleryError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('이미지를 로드하는 중 오류가 발생했습니다: ${state.error}')),
+            );
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            actions: [
+              ValueListenableBuilder<AssetEntity?>(
+                valueListenable: selectedGalleryImage,
+                builder: (context, selectedImage, child) {
+                  return TextButton(
+                    onPressed: selectedImage != null
+                        ? () => Navigator.of(context).pop({
+                              'selectedImage': selectedImage,
+                            })
+                        : null,
+                    child: Text(
+                      AppStrings.selection,
+                      style: TextStyle(
+                        color:
+                            selectedImage != null ? Colors.blue : Colors.grey,
+                      ),
                     ),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: BlocBuilder<GalleryBloc, GalleryState>(
+            builder: (context, state) {
+              if (state is GalleryLoading) {
+                return const CenterCircularProgressIndicator();
+              } else if (state is GalleryLoaded) {
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 4,
+                    mainAxisSpacing: 4,
                   ),
+                  itemCount: state.mediaList.length + 1,
+                  itemBuilder: (context, index) =>
+                      gridItem(context, index, state.mediaList),
                 );
-              },
-            ),
-          ],
-        ),
-        body: BlocBuilder<GalleryBloc, GalleryState>(
-          builder: (context, state) {
-            if (state is GalleryLoading) {
-              return const CenterCircularProgressIndicator();
-            } else if (state is GalleryLoaded) {
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 4,
-                  mainAxisSpacing: 4,
-                ),
-                itemCount: state.mediaList.length + 1,
-                itemBuilder: (context, index) =>
-                    gridItem(context, index, state.mediaList),
-              );
-            } else if (state is GalleryError) {
-              return Center(child: Text('오류 발생: ${state.error}'));
-            }
-            return const Center(child: Text('이미지를 불러올 수 없습니다.'));
-          },
+              } else if (state is GalleryError) {
+                return Center(child: Text('오류 발생: ${state.error}'));
+              }
+              return const Center(child: Text('이미지를 불러올 수 없습니다.'));
+            },
+          ),
         ),
       ),
     );

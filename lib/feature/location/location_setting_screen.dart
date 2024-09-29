@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fishingmemory/core/data/repository/map/map_repository.dart';
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/core/widgets/default_circular_progress_indicator.dart';
 import 'package:fishingmemory/feature/location/bloc/geocoding_state.dart';
@@ -120,87 +121,95 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
 
   Widget buildBodyContent(LocationSettingState state) {
     List<String> selectedRegionNames = getSelectedRegionNames(state);
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Stack(children: [
-        if (state.reverseGeoCodingState is ReverseGeoCodingLoading ||
-            state.geoCodingState is GeoCodingLoading)
-          const CenterCircularProgressIndicator(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            locationHeader(
-                state.currentPage, state.selectedRegionName.join(" ")),
-            const SizedBox(height: 20),
-            if (state.currentPage == 0) currentLocationItem(state),
-            const Divider(),
-            Expanded(
-              child: state.currentPage == 2 &&
-                      state.geoCodingState is GeoCodingSuccess
-                  ? mapContent(
-                      onMapReady: (controller) {
-                        mapController = controller;
-                        mapController
-                          ..updateCamera(NCameraUpdate.fromCameraPosition(
-                            NCameraPosition(
+    return BlocProvider(
+      lazy: false,
+      create: (context) => LocationSettingBloc(
+        mapRepository: RepositoryProvider.of<MapRepository>(context),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Stack(children: [
+          if (state.reverseGeoCodingState is ReverseGeoCodingLoading ||
+              state.geoCodingState is GeoCodingLoading)
+            const CenterCircularProgressIndicator(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              locationHeader(
+                  state.currentPage, state.selectedRegionName.join(" ")),
+              const SizedBox(height: 20),
+              if (state.currentPage == 0) currentLocationItem(state),
+              const Divider(),
+              Expanded(
+                child: state.currentPage == 2 &&
+                        state.geoCodingState is GeoCodingSuccess
+                    ? mapContent(
+                        onMapReady: (controller) {
+                          mapController = controller;
+                          mapController
+                            ..updateCamera(NCameraUpdate.fromCameraPosition(
+                              NCameraPosition(
+                                  target: NLatLng(
+                                    state.lat,
+                                    state.lng,
+                                  ),
+                                  zoom: 14),
+                            ))
+                            ..addOverlay(NMarker(
+                              id: 'marker',
+                              position: NLatLng(
+                                state.lat,
+                                state.lng,
+                              ),
+                              icon: const NOverlayImage.fromAssetImage(
+                                  AppIcons.mapMarker),
+                            ));
+                        },
+                        onTapped: (latLng) {
+                          context.read<LocationSettingBloc>().add(
+                              SetReverseGeocoding(
+                                  "${latLng.longitude},${latLng.latitude}"));
+                          mapController
+                            ..updateCamera(NCameraUpdate.fromCameraPosition(
+                              NCameraPosition(
                                 target: NLatLng(
-                                  state.lat,
-                                  state.lng,
+                                  latLng.latitude,
+                                  latLng.longitude,
                                 ),
-                                zoom: 14),
-                          ))
-                          ..addOverlay(NMarker(
-                            id: 'marker',
-                            position: NLatLng(
-                              state.lat,
-                              state.lng,
-                            ),
-                            icon: const NOverlayImage.fromAssetImage(
-                                AppIcons.mapMarker),
-                          ));
-                      },
-                      onTapped: (latLng) {
-                        context.read<LocationSettingBloc>().add(
-                            SetReverseGeocoding(
-                                "${latLng.longitude},${latLng.latitude}"));
-                        mapController
-                          ..updateCamera(NCameraUpdate.fromCameraPosition(
-                            NCameraPosition(
-                              target: NLatLng(
+                                zoom: 14,
+                              ),
+                            ))
+                            ..addOverlay(NMarker(
+                              id: 'marker',
+                              position: NLatLng(
                                 latLng.latitude,
                                 latLng.longitude,
                               ),
-                              zoom: 14,
-                            ),
-                          ))
-                          ..addOverlay(NMarker(
-                            id: 'marker',
-                            position: NLatLng(
-                              latLng.latitude,
-                              latLng.longitude,
-                            ),
-                            icon: const NOverlayImage.fromAssetImage(
-                              AppIcons.mapMarker,
-                            ),
-                          ));
-                      },
-                      lat: state.lng,
-                      lng: state.lat,
-                    )
-                  : regionContent(
-                      state.currentPage == 0 ? state.doIndex : state.cityIndex,
-                      (index) => handleRegionSelection(state, index),
-                      selectedRegionNames,
-                      (regionName) => context
-                          .read<LocationSettingBloc>()
-                          .add(SetSelectedRegionName(regionName)),
-                    ),
-            ),
-            const SizedBox(height: 20),
-            bottomNavigationButtons(state),
-          ],
-        ),
-      ]),
+                              icon: const NOverlayImage.fromAssetImage(
+                                AppIcons.mapMarker,
+                              ),
+                            ));
+                        },
+                        lat: state.lng,
+                        lng: state.lat,
+                      )
+                    : regionContent(
+                        state.currentPage == 0
+                            ? state.doIndex
+                            : state.cityIndex,
+                        (index) => handleRegionSelection(state, index),
+                        selectedRegionNames,
+                        (regionName) => context
+                            .read<LocationSettingBloc>()
+                            .add(SetSelectedRegionName(regionName)),
+                      ),
+              ),
+              const SizedBox(height: 20),
+              bottomNavigationButtons(state),
+            ],
+          ),
+        ]),
+      ),
     );
   }
 
