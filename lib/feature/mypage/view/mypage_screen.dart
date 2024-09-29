@@ -1,3 +1,4 @@
+import 'package:fishingmemory/core/data/repository/auth/auth_repository.dart';
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/core/utils/AppConstants.dart';
 import 'package:fishingmemory/core/widgets/app_snackbar.dart';
