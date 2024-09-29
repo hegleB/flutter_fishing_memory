@@ -60,5 +60,7 @@
 	<string>앱이 실행되는 동안 사용자의 위치를 사용하려면 권한이 필요합니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>앱이 항상 사용자의 위치에 액세스할 수 있도록 권한이 필요합니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>사진 접근할 수 있도록 권한이 필요합니다.</string>
 </dict>
 </plist>
