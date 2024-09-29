@@ -78,4 +78,6 @@ abstract class AppStrings {
   static const setting = "설정";
   static const previous = "이전";
   static const currentLocation = "현재 나의 위치";
+
+  static const galleryImageLoadErrorMessage = "이미지를 불러오지 못했습니다.";
 }
