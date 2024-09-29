@@ -24,42 +24,40 @@ class App extends StatelessWidget {
     final dio = DioUtil();
 
     return MultiRepositoryProvider(
-        providers: [
-          RepositoryProvider<AuthRepository>(
-              create: (context) => AuthRepositoryImpl(
-                    authService: AuthService(dio.firebaseDio),
-                    sharedPreferences: sharedPreferences,
-                  )),
-          RepositoryProvider<OnboardingRepository>(
-            create: (context) => OnboardingRepositoryImpl(sharedPreferences),
+      providers: [
+        RepositoryProvider<AuthRepository>(
+            create: (context) => AuthRepositoryImpl(
+                  authService: AuthService(dio.firebaseDio),
+                  sharedPreferences: sharedPreferences,
+                )),
+        RepositoryProvider<OnboardingRepository>(
+          create: (context) => OnboardingRepositoryImpl(sharedPreferences),
+        ),
+        RepositoryProvider<PermissionRepository>(
+          create: (context) => PermissionRepositoryImpl(sharedPreferences),
+        ),
+        RepositoryProvider<MapRepository>(
+          create: (context) =>
+              MapRepositoryImpl(mapService: MapService(dio.mapDio)),
+        ),
+        RepositoryProvider<MemoRepository>(
+          create: (context) => MemoRepositoryImpl(
+            memoService: MemoService(dio.firebaseDio),
+            storageService: StorageService(dio.storageDio),
           ),
-          RepositoryProvider<PermissionRepository>(
-            create: (context) => PermissionRepositoryImpl(sharedPreferences),
-          ),
-          RepositoryProvider<MapRepository>(
-            create: (context) =>
-                MapRepositoryImpl(mapService: MapService(dio.mapDio)),
-          ),
-          RepositoryProvider<MemoRepository>(
-            create: (context) => MemoRepositoryImpl(
-              memoService: MemoService(dio.firebaseDio),
-              storageService: StorageService(dio.storageDio),
-            ),
-          ),
-        ],
-        child: MultiBlocProvider(
-          providers: const [],
-          child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: SplashScreen(),
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('ko'),
-              ]),
-        ));
+        ),
+      ],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: SplashScreen(),
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('ko'),
+          ]),
+    );
   }
 }
