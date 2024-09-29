@@ -1,3 +1,4 @@
+import 'package:fishingmemory/core/data/repository/auth/auth_repository.dart';
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/core/widgets/default_circular_progress_indicator.dart';
 import 'package:fishingmemory/core/widgets/app_snackbar.dart';
@@ -14,49 +15,56 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kakaoLoginService = KakaoLoginService();
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) async {
-        if (state is LoginLaunch) {
-          handleLogin(context, kakaoLoginService);
-        } else if (state is LoginSuccess) {
-          navigateToHomeScreen(context);
-        } else if (state is LoginError) {
-          AppSnackbar.show(context, AppStrings.logoutErrorMessage);
-        }
-      },
-      child: BlocBuilder<LoginBloc, LoginState>(
-        builder: (context, state) {
-          return Scaffold(
-            body: Stack(
-              children: [
-                Positioned.fill(
-                  child: Image.asset(
-                    AppImages.loginBackground,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const Column(
-                  children: [
-                    Spacer(flex: 2),
-                    LoginTitle(),
-                    Spacer(flex: 3),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-                      child: KakaoButton(),
-                    ),
-                  ],
-                ),
-                if (state is LoginLoading) const CenterCircularProgressIndicator(),
-
-              ],
-            ),
-          );
+    return BlocProvider(
+      create: (context) => LoginBloc(
+        authRepository: RepositoryProvider.of<AuthRepository>(context),
+      ),
+      child: BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) async {
+          if (state is LoginLaunch) {
+            handleLogin(context, kakaoLoginService);
+          } else if (state is LoginSuccess) {
+            navigateToHomeScreen(context);
+          } else if (state is LoginError) {
+            AppSnackbar.show(context, AppStrings.logoutErrorMessage);
+          }
         },
+        child: BlocBuilder<LoginBloc, LoginState>(
+          builder: (context, state) {
+            return Scaffold(
+              body: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.asset(
+                      AppImages.loginBackground,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const Column(
+                    children: [
+                      Spacer(flex: 2),
+                      LoginTitle(),
+                      Spacer(flex: 3),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 30.0),
+                        child: KakaoButton(),
+                      ),
+                    ],
+                  ),
+                  if (state is LoginLoading)
+                    const CenterCircularProgressIndicator(),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Future<void> handleLogin(BuildContext context, KakaoLoginService kakaoLoginService) async {
+  Future<void> handleLogin(
+      BuildContext context, KakaoLoginService kakaoLoginService) async {
     try {
       OAuthToken? token = await kakaoLoginService.loginWithKakaoOrThrow();
       User user = await UserApi.instance.me();

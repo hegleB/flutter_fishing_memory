@@ -47,11 +47,6 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => LoginBloc(
-                authRepository: RepositoryProvider.of<AuthRepository>(context),
-              ),
-            ),
-            BlocProvider(
               create: (context) => OnboardingCubit(
                 onboardingRepository:
                     RepositoryProvider.of<OnboardingRepository>(context),
