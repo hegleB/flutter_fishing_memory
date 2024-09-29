@@ -3,11 +3,15 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fishingmemory/core/data/api/memo_service.dart';
+import 'package:fishingmemory/core/data/api/storage_service.dart';
 import 'package:fishingmemory/core/data/entity/memo/memo_entity.dart';
 import 'package:fishingmemory/core/data/entity/memo/memo_fields_request.dart';
+import 'package:fishingmemory/core/data/entity/memo/memo_storage_entity.dart';
 import 'package:fishingmemory/core/models/memo/memo.dart';
 import 'package:fishingmemory/core/models/memo/memo_fields.dart';
+import 'package:fishingmemory/core/models/memo/memo_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http_parser/http_parser.dart';
 
 abstract class MemoRepository {
   Future<Memo> createMemo(MemoFields memoFields);
@@ -16,9 +20,11 @@ abstract class MemoRepository {
 
 class MemoRepositoryImpl implements MemoRepository {
   final MemoService memoService;
+  final StorageService storageService;
 
   MemoRepositoryImpl({
     required this.memoService,
+    required this.storageService,
   });
 
   @override
@@ -33,6 +39,21 @@ class MemoRepositoryImpl implements MemoRepository {
     );
     return memoEntity.toMemo();
   }
+
+  @override
+  Future<MemoStorage> uploadMemoImage(File image) async {
+    final String fileName =
+        "${DateTime.now().microsecondsSinceEpoch.toString()}.png";
+    var multipartFile = await MultipartFile.fromFile(
+      image.path,
+      filename: fileName,
+      contentType: MediaType('image', 'png'),
+    );
+
+    final storageEntity =
+        await storageService.postMemoImage(fileName, [multipartFile]);
+    return storageEntity.toMemoStorage();
+  }
 }
 
 extension MemoEntityToMemo on MemoEntity {
@@ -40,6 +61,28 @@ extension MemoEntityToMemo on MemoEntity {
     return Memo(
       fields: fields,
       createTime: createTime,
+    );
+  }
+}
+
+extension MemoStorageMapper on MemoStorageEntity {
+  MemoStorage toMemoStorage() {
+    return MemoStorage(
+      name: name,
+      bucket: bucket,
+      generation: generation,
+      metageneration: metageneration,
+      contentType: contentType,
+      timeCreated: timeCreated,
+      updated: updated,
+      storageClass: storageClass,
+      size: size,
+      md5Hash: md5Hash,
+      contentEncoding: contentEncoding,
+      contentDisposition: contentDisposition,
+      crc32c: crc32c,
+      etag: etag,
+      downloadTokens: downloadTokens,
     );
   }
 }
