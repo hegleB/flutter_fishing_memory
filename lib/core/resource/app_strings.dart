@@ -80,4 +80,6 @@ abstract class AppStrings {
   static const currentLocation = "현재 나의 위치";
 
   static const galleryImageLoadErrorMessage = "이미지를 불러오지 못했습니다.";
+
+  static const memoCreateErrorMessage = "메모 생성을 실패하였습니다. 다시 시도해주세요.";
 }
