@@ -1,3 +1,5 @@
+import 'package:fishingmemory/core/data/repository/onboarding/onboarding_repository.dart';
+import 'package:fishingmemory/core/data/repository/permission/permission_repository.dart';
 import 'package:fishingmemory/core/widgets/app_snackbar.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_cubit.dart';
 import 'package:fishingmemory/feature/onboarding/cubit/onboarding_state.dart';
@@ -36,23 +38,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: BlocConsumer<OnboardingCubit, OnboardingState>(
-        listener: (context, state) {
-          if (state is OnboardingCompleted) {
-            if (state.onboardingStateType == OnboardingStateType.permission) {
-              navigateToPermissionScreen(context);
-            } else if (state.onboardingStateType == OnboardingStateType.login) {
-              navigateToLoginScreen(context); 
+    return BlocProvider(
+      create: (context) => OnboardingCubit(
+        onboardingRepository:
+            RepositoryProvider.of<OnboardingRepository>(context),
+        permissionRepository:
+            RepositoryProvider.of<PermissionRepository>(context),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: BlocConsumer<OnboardingCubit, OnboardingState>(
+          listener: (context, state) {
+            if (state is OnboardingCompleted) {
+              if (state.onboardingStateType == OnboardingStateType.permission) {
+                navigateToPermissionScreen(context);
+              } else if (state.onboardingStateType ==
+                  OnboardingStateType.login) {
+                navigateToLoginScreen(context);
+              }
+            } else if (state is OnboardingError) {
+              AppSnackbar.show(context, AppStrings.retryErrorMessagengError);
             }
-          } else if (state is OnboardingError) {
-            AppSnackbar.show(context, AppStrings.retryErrorMessagengError);
-          }
-        },
-        builder: (context, state) {
-          return buildOnboardingContent(context);
-        },
+          },
+          builder: (context, state) {
+            return buildOnboardingContent(context);
+          },
+        ),
       ),
     );
   }
@@ -138,7 +149,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               width: currentPage == index ? 18.0 : 12.0,
               height: currentPage == index ? 18.0 : 12.0,
               decoration: BoxDecoration(
-                color: currentPage == index ? AppColors.gray450 : AppColors.gray200,
+                color: currentPage == index
+                    ? AppColors.gray450
+                    : AppColors.gray200,
                 shape: BoxShape.circle,
               ),
             ),
@@ -173,7 +186,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           }
         },
         child: Text(
-          currentPage == onboardingData.length - 1 ? AppStrings.started : AppStrings.next,
+          currentPage == onboardingData.length - 1
+              ? AppStrings.started
+              : AppStrings.next,
           style: const TextStyle(color: Colors.white),
         ),
       ),

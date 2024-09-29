@@ -47,14 +47,6 @@ class App extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => OnboardingCubit(
-                onboardingRepository:
-                    RepositoryProvider.of<OnboardingRepository>(context),
-                permissionRepository:
-                    RepositoryProvider.of<PermissionRepository>(context),
-              ),
-            ),
-            BlocProvider(
               create: (context) => SplashCubit(
                 authRepository: RepositoryProvider.of<AuthRepository>(context),
                 onboardingRepository:
