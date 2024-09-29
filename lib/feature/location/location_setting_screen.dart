@@ -34,13 +34,6 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    locationSettingBloc = context.read<LocationSettingBloc>();
-  }
-
-  @override
-  void dispose() {
-    locationSettingBloc.add(ResetLocationSetting());
-    super.dispose();
   }
 
   Future<void> initializePermissions() async {
@@ -89,19 +82,25 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LocationSettingBloc, LocationSettingState>(
-      listener: (context, state) => handleStateChanges(state),
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+    return BlocProvider(
+      lazy: false,
+      create: (context) => LocationSettingBloc(
+        mapRepository: RepositoryProvider.of<MapRepository>(context),
+      ),
+      child: BlocListener<LocationSettingBloc, LocationSettingState>(
+        listener: (context, state) => handleStateChanges(state),
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
-        ),
-        body: BlocBuilder<LocationSettingBloc, LocationSettingState>(
-          builder: (context, state) => buildBodyContent(state),
+          body: BlocBuilder<LocationSettingBloc, LocationSettingState>(
+            builder: (context, state) => buildBodyContent(state, context),
+          ),
         ),
       ),
     );
@@ -119,97 +118,101 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Widget buildBodyContent(LocationSettingState state) {
+  Widget buildBodyContent(LocationSettingState state, BuildContext context) {
     List<String> selectedRegionNames = getSelectedRegionNames(state);
-    return BlocProvider(
-      lazy: false,
-      create: (context) => LocationSettingBloc(
-        mapRepository: RepositoryProvider.of<MapRepository>(context),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Stack(children: [
-          if (state.reverseGeoCodingState is ReverseGeoCodingLoading ||
-              state.geoCodingState is GeoCodingLoading)
-            const CenterCircularProgressIndicator(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              locationHeader(
-                  state.currentPage, state.selectedRegionName.join(" ")),
-              const SizedBox(height: 20),
-              if (state.currentPage == 0) currentLocationItem(state),
-              const Divider(),
-              Expanded(
-                child: state.currentPage == 2 &&
-                        state.geoCodingState is GeoCodingSuccess
-                    ? mapContent(
-                        onMapReady: (controller) {
-                          mapController = controller;
-                          mapController
-                            ..updateCamera(NCameraUpdate.fromCameraPosition(
-                              NCameraPosition(
-                                  target: NLatLng(
-                                    state.lat,
-                                    state.lng,
-                                  ),
-                                  zoom: 14),
-                            ))
-                            ..addOverlay(NMarker(
-                              id: 'marker',
-                              position: NLatLng(
-                                state.lat,
-                                state.lng,
-                              ),
-                              icon: const NOverlayImage.fromAssetImage(
-                                  AppIcons.mapMarker),
-                            ));
-                        },
-                        onTapped: (latLng) {
-                          context.read<LocationSettingBloc>().add(
-                              SetReverseGeocoding(
-                                  "${latLng.longitude},${latLng.latitude}"));
-                          mapController
-                            ..updateCamera(NCameraUpdate.fromCameraPosition(
-                              NCameraPosition(
+    final locationSettingBloc = context.read<LocationSettingBloc>();
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Stack(children: [
+        if (state.reverseGeoCodingState is ReverseGeoCodingLoading ||
+            state.geoCodingState is GeoCodingLoading)
+          const CenterCircularProgressIndicator(),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            locationHeader(
+                state.currentPage, state.selectedRegionName.join(" ")),
+            const SizedBox(height: 20),
+            if (state.currentPage == 0) currentLocationItem(state, context),
+            const Divider(),
+            Expanded(
+              child: state.currentPage == 2 &&
+                      state.geoCodingState is GeoCodingSuccess
+                  ? mapContent(
+                      onMapReady: (controller) {
+                        mapController = controller;
+                        mapController
+                          ..updateCamera(NCameraUpdate.fromCameraPosition(
+                            NCameraPosition(
                                 target: NLatLng(
-                                  latLng.latitude,
-                                  latLng.longitude,
+                                  state.lat,
+                                  state.lng,
                                 ),
-                                zoom: 14,
-                              ),
-                            ))
-                            ..addOverlay(NMarker(
-                              id: 'marker',
-                              position: NLatLng(
+                                zoom: 14),
+                          ))
+                          ..addOverlay(NMarker(
+                            id: 'marker',
+                            position: NLatLng(
+                              state.lat,
+                              state.lng,
+                            ),
+                            icon: const NOverlayImage.fromAssetImage(
+                                AppIcons.mapMarker),
+                          ));
+                      },
+                      onTapped: (latLng) {
+                        locationSettingBloc.add(SetReverseGeocoding(
+                            "${latLng.longitude},${latLng.latitude}"));
+                        mapController
+                          ..updateCamera(NCameraUpdate.fromCameraPosition(
+                            NCameraPosition(
+                              target: NLatLng(
                                 latLng.latitude,
                                 latLng.longitude,
                               ),
-                              icon: const NOverlayImage.fromAssetImage(
-                                AppIcons.mapMarker,
-                              ),
-                            ));
-                        },
-                        lat: state.lng,
-                        lng: state.lat,
-                      )
-                    : regionContent(
-                        state.currentPage == 0
-                            ? state.doIndex
-                            : state.cityIndex,
-                        (index) => handleRegionSelection(state, index),
-                        selectedRegionNames,
-                        (regionName) => context
-                            .read<LocationSettingBloc>()
-                            .add(SetSelectedRegionName(regionName)),
+                              zoom: 14,
+                            ),
+                          ))
+                          ..addOverlay(NMarker(
+                            id: 'marker',
+                            position: NLatLng(
+                              latLng.latitude,
+                              latLng.longitude,
+                            ),
+                            icon: const NOverlayImage.fromAssetImage(
+                              AppIcons.mapMarker,
+                            ),
+                          ));
+                      },
+                      lat: state.lng,
+                      lng: state.lat,
+                    )
+                  : regionContent(
+                      state.currentPage == 0 ? state.doIndex : state.cityIndex,
+                      (index) => handleRegionSelection(
+                        state,
+                        index,
+                        (index) =>
+                            locationSettingBloc.add(SetSelectedIndex(index)),
+                        (doIndex) => locationSettingBloc.add(SetDoIndex(index)),
+                        (cityIndex) =>
+                            locationSettingBloc.add(SetCityIndex(index)),
                       ),
-              ),
-              const SizedBox(height: 20),
-              bottomNavigationButtons(state),
-            ],
-          ),
-        ]),
-      ),
+                      selectedRegionNames,
+                      (regionName) => locationSettingBloc
+                          .add(SetSelectedRegionName(regionName)),
+                    ),
+            ),
+            const SizedBox(height: 20),
+            bottomNavigationButtons(
+              state,
+              () => locationSettingBloc.add(ClickedPreviousPage()),
+              () => locationSettingBloc.add(ClickedNextPage()),
+              (region) => locationSettingBloc.add(SetGeocoding(region)),
+            ),
+          ],
+        ),
+      ]),
     );
   }
 
@@ -223,7 +226,7 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
     }
   }
 
-  Widget currentLocationItem(LocationSettingState state) {
+  Widget currentLocationItem(LocationSettingState state, BuildContext context) {
     return regionItem(
       region: AppStrings.currentLocation,
       onClick: () async {
@@ -241,16 +244,27 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
     );
   }
 
-  void handleRegionSelection(LocationSettingState state, int index) {
-    context.read<LocationSettingBloc>().add(SetSelectedIndex(index));
+  void handleRegionSelection(
+    LocationSettingState state,
+    int index,
+    Function(int) onSelectedIndex,
+    Function(int) onSelectedDoIndex,
+    Function(int) onSelectedCityIndex,
+  ) {
+    onSelectedIndex(index);
     if (state.currentPage == 0) {
-      context.read<LocationSettingBloc>().add(SetDoIndex(index));
+      onSelectedDoIndex(index);
     } else {
-      context.read<LocationSettingBloc>().add(SetCityIndex(index));
+      onSelectedCityIndex(index);
     }
   }
 
-  Widget bottomNavigationButtons(LocationSettingState state) {
+  Widget bottomNavigationButtons(
+    LocationSettingState state,
+    Function() onClickPreviosPage,
+    Function() onClickNextPage,
+    Function(String) onSetGeocoding,
+  ) {
     return Stack(
       children: [
         if (state.currentPage > 0)
@@ -258,9 +272,7 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
             alignment: Alignment.bottomLeft,
             child: navigationButton(
               AppStrings.previous,
-              onPressed: () => context
-                  .read<LocationSettingBloc>()
-                  .add(ClickedPreviousPage()),
+              onPressed: onClickPreviosPage,
             ),
           ),
         Align(
@@ -271,8 +283,7 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
                 ? null
                 : () {
                     if (state.currentPage == 1) {
-                      context.read<LocationSettingBloc>().add(
-                          SetGeocoding(state.selectedRegionName.join(" ")));
+                      onSetGeocoding(state.selectedRegionName.join(" "));
                     } else if (state.currentPage == 2) {
                       String coords = state.geoCodingState is GeoCodingSuccess
                           ? (state.geoCodingState as GeoCodingSuccess)
@@ -284,7 +295,7 @@ class _LocationSettingScreenState extends State<LocationSettingScreen> {
                         'coords': coords,
                       });
                     }
-                    context.read<LocationSettingBloc>().add(ClickedNextPage());
+                    onClickNextPage();
                   },
           ),
         ),
