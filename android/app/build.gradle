@@ -35,7 +35,7 @@ if (envFile.exists()) {
 }
 
 android {
-    namespace = "com.example.fishingmemory"
+    namespace = "com.qure.fishingmemory"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
