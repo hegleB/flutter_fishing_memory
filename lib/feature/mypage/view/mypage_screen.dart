@@ -52,11 +52,14 @@ class _MyPageScreenState extends State<MyPageScreen> {
       child: BlocBuilder<MyPageCubit, MyPageState>(
         builder: (context, state) {
           String? email = context.read<MyPageCubit>().email;
-          final groupedItems = buildGroupedItems(email);
+          final groupedItems = buildGroupedItems(
+            email,
+            () => context.read<MyPageCubit>().logout(),
+            () => context.read<MyPageCubit>().withdrawService(),
+          );
           if (state is MyPageError) {
             AppSnackbar.show(context, AppStrings.logoutErrorMessage);
           } else if (state is MyPageSuccess) {
-            context.read<MyPageCubit>().reset();
             navigateToLogin();
           }
 
@@ -95,7 +98,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
     );
   }
 
-  List<List<MyPageItemData>> buildGroupedItems(String? email) {
+  List<List<MyPageItemData>> buildGroupedItems(
+    String? email,
+    Function() onClickLogout,
+    Function() onClickWithdrawService,
+  ) {
     return [
       [
         MyPageItemData(
@@ -125,39 +132,30 @@ class _MyPageScreenState extends State<MyPageScreen> {
         MyPageItemData(
           text: AppStrings.termsOfService,
           hasIcon: true,
-          onClick: () {
-            navigateToProgramInfo(AppConstants.termsOfServiceUrl);
-          },
+          onClick: () => navigateToProgramInfo(AppConstants.termsOfServiceUrl),
         ),
         MyPageItemData(
           text: AppStrings.privacyPolice,
           hasIcon: true,
-          onClick: () {
-            navigateToProgramInfo(AppConstants.policePrivacyUrl);
-          },
+          onClick: () => navigateToProgramInfo(AppConstants.policePrivacyUrl),
         ),
         MyPageItemData(
           text: AppStrings.opensourceLicense,
           hasIcon: true,
-          onClick: () {
-            navigateToProgramInfo(AppConstants.opensourceLicenseUrl);
-          },
+          onClick: () =>
+              navigateToProgramInfo(AppConstants.opensourceLicenseUrl),
         ),
       ],
       [
         MyPageItemData(
           text: AppStrings.logout,
           hasIcon: true,
-          onClick: () {
-            context.read<MyPageCubit>().logout();
-          },
+          onClick: onClickLogout,
         ),
         MyPageItemData(
           text: AppStrings.withdraw,
           hasIcon: true,
-          onClick: () {
-            context.read<MyPageCubit>().withdrawService();
-          },
+          onClick: onClickWithdrawService,
         ),
       ],
     ];
