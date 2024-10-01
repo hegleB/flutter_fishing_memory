@@ -18,12 +18,6 @@ class GalleryScreen extends StatefulWidget {
 class _GalleryScreenState extends State<GalleryScreen> {
   final ValueNotifier<AssetEntity?> selectedGalleryImage = ValueNotifier(null);
 
-  @override
-  void initState() {
-    super.initState();
-    context.read<GalleryBloc>().add(FetchGalleryImages());
-  }
-
   Widget gridItem(
       BuildContext context, int index, List<AssetEntity> mediaList) {
     if (index == 0) {
@@ -105,7 +99,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GalleryBloc(),
+      create: (context) => GalleryBloc()..add(FetchGalleryImages()),
       child: BlocListener<GalleryBloc, GalleryState>(
         listener: (context, state) {
           if (state is GalleryError) {
