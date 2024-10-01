@@ -61,6 +61,8 @@ class _MemoCreateScreenState extends State<MemoCreateScreen> {
           if (state.memoCreateUiState == MemoCreateUiState.error) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text(AppStrings.memoCreateErrorMessage)));
+          } else if (state.memoCreateUiState == MemoCreateUiState.success) {
+            Navigator.of(context).pop();
           }
         },
         child: BlocBuilder<MemoCreateBloc, MemoCreateState>(
