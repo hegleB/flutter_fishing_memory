@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:fishingmemory/core/resource/resource.dart';
 import 'package:fishingmemory/core/widgets/default_circular_progress_indicator.dart';
+import 'package:fishingmemory/feature/camera/view/camera_screen.dart';
 import 'package:fishingmemory/feature/gallery/bloc/gallery_bloc.dart';
 import 'package:fishingmemory/feature/gallery/bloc/gallery_state.dart';
 import 'package:fishingmemory/feature/gallery/bloc/gallery_event.dart';
@@ -21,7 +22,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Widget gridItem(
       BuildContext context, int index, List<AssetEntity> mediaList) {
     if (index == 0) {
-      return cameraTile();
+      return cameraTile(() => Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const CameraScreen())));
     }
 
     final AssetEntity media = mediaList[index - 1];
@@ -45,9 +47,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
     );
   }
 
-  Widget cameraTile() {
+  Widget cameraTile(
+    Function() navigateToCamera,
+  ) {
     return GestureDetector(
-      onTap: () => print('사진 찍기'),
+      onTap: navigateToCamera,
       child: Container(
         color: AppColors.white,
         child: const Center(
