@@ -55,7 +55,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.camera_alt, size: 40),
-              Text('사진 찍기'),
+              Text(AppStrings.takePicture),
             ],
           ),
         ),
@@ -104,7 +104,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
         listener: (context, state) {
           if (state is GalleryError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('이미지를 로드하는 중 오류가 발생했습니다: ${state.error}')),
+              const SnackBar(
+                  content: Text(AppStrings.galleryImageLoadErrorMessage)),
             );
           }
         },
@@ -148,9 +149,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       gridItem(context, index, state.mediaList),
                 );
               } else if (state is GalleryError) {
-                return Center(child: Text('오류 발생: ${state.error}'));
+                return const Center(
+                    child: Text(AppStrings.galleryImageLoadErrorMessage));
               }
-              return const Center(child: Text('이미지를 불러올 수 없습니다.'));
+              return const Center(
+                  child: Text(AppStrings.galleryImageLoadErrorMessage));
             },
           ),
         ),

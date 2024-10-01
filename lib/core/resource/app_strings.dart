@@ -84,4 +84,6 @@ abstract class AppStrings {
   static const memoCreateErrorMessage = "메모 생성을 실패하였습니다. 다시 시도해주세요.";
 
   static const appDateFormat = "yyyy/MM/dd";
+
+  static const takePicture = "사진 찍기";
 }
