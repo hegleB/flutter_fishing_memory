@@ -24,6 +24,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     }
 
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
+      type: RequestType.image,
       onlyAll: true,
       filterOption: FilterOptionGroup(
         imageOption: const FilterOption(
